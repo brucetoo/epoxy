@@ -32,6 +32,9 @@ public abstract class EpoxyModel<T> {
     id(id);
   }
 
+  /**
+   * 通常用此构造方法让EpoxyModel来管理对应的id,保证不冲突
+   */
   public EpoxyModel() {
     this(idCounter--);
   }

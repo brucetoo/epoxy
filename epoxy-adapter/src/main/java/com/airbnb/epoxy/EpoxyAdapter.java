@@ -28,9 +28,11 @@ public abstract class EpoxyAdapter extends RecyclerView.Adapter<EpoxyViewHolder>
   /**
    * Subclasses should modify this list as necessary with the models they want to show. Subclasses
    * are responsible for notifying data changes whenever this list is changed.
+   * 用于监听list中数据的变化-插入和删除操作的变化通知更新UI
    */
   protected final List<EpoxyModel<?>> models = new ModelList();
   private int spanCount = 1;
+  //针对每个EpoxyModel隐藏模式下的替代model
   private final HiddenEpoxyModel hiddenModel = new HiddenEpoxyModel();
   /**
    * Keeps track of view holders that are currently bound so we can save their state in {@link
@@ -141,11 +143,17 @@ public abstract class EpoxyAdapter extends RecyclerView.Adapter<EpoxyViewHolder>
     }
 
     EpoxyModel<?> modelToShow = getModelForPosition(position);
+    //绑定 holder
     holder.bind(modelToShow, payloads);
 
+    //保持itemView的状态 且必须和itemId绑定  通过 ViewHolderState(实际上就是LongSpaceArray)
     viewHolderState.restore(holder);
+    /**
+     * 保持view状态 通过{@link EpoxyModel#shouldSaveViewState()} 来控制是否保存itemView状态
+     */
     boundViewHolders.put(holder);
 
+    //model绑定成功
     onModelBound(holder, modelToShow, position, payloads);
   }
 
